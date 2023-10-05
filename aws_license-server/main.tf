@@ -12,7 +12,8 @@ variable "sentieon_version" {
 
 locals {
   license_bucket_arn = format("arn:aws:s3:::%s", split("/", var.license_s3_uri)[2])
-  license_obj_arn    = format("arn:aws:s3:::%s", join("/", slice(split("/", var.license_s3_uri), 2, 5)))
+  s3_uri_arr         = split("/", var.license_s3_uri)
+  license_obj_arn    = format("arn:aws:s3:::%s", join("/", slice(local.s3_uri_arr, 2, length(local.s3_uri_arr))))
 }
 
 terraform {
