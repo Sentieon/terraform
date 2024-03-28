@@ -1,10 +1,13 @@
+variable "azure_region" {}
+variable "resource_name" {}
+
 provider "azurerm" {
   features {}
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "sentieon-rg"
-  location = "East US"
+  name     = var.resource_name
+  location = var.azure_region
 }
 
 resource "azurerm_virtual_network" "vnet" {
