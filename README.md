@@ -5,6 +5,55 @@ Terraform configuration files for the Sentieon software
 
 [Terraform](https://www.terraform.io/) is an open-source infrastructure as code (IaC) tool for the provisioning and management of cloud infrastructure. This repository contains example terraform configuration files that can be used to quickly deploy the Sentieon software to your cloud infrastructure.
 
+## Quick Start - Sentieon License server deployment to Azure
+
+### Requirements
+
+* The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads)
+* The [Azure CLI]( https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+* An Azure account and credentials with permission to provision resources inside the account
+* A Sentieon license file for your FQDN, bound to port 8990 and placed in your Blob storage container
+
+### Provision the license server
+
+Use the terraform configuration files to provision the following infrastructure:
+
+* An Azure Virtual Network. The default network configuration with the default subnet(s), internet gateway, and route table is assumed in this deployment guide.
+Security groups that can be used to run the Sentieon® license server and the compute nodes.
+* A (Standard_B1s) instance running the Sentieon® license server.
+* Security groups for the Sentieon license server and any compute nodes
+
+```bash
+git clone https://github.com/sentieon/terraform
+cd terraform/azure_license-server
+
+
+# login into Azure using az cli
+az login
+
+# Initialize the directory with Terraform
+terraform init  
+
+# Provision the license server infrastructure
+terraform apply \
+  -var 'azure_region=<AZURE_REGION>' \
+  -var 'resource_name=<RESROUCE_NAME>' 
+
+```
+
+The infrastructure should startup within a few minutes.
+
+Azure will charge your account for deployed infrastructure including the VM instance, disk, public ip and virtual network.
+
+### Cleanup
+
+The provisioned infrastructure can be destroyed with the `terraform apply -destroy` command:
+```bash
+terraform apply -destroy \
+  -var 'azure_region=<AZURE_REGION>' \
+  -var 'resource_name=<RESROUCE_NAME>' 
+```
+
 ## Quick Start - Sentieon License server deployment to AWS
 
 ### Requirements
