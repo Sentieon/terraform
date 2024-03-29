@@ -12,7 +12,7 @@ Terraform configuration files for the Sentieon software
 * The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads)
 * The [Azure CLI]( https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 * An Azure account and credentials with permission to provision resources inside the account
-* A Sentieon license file for your FQDN, bound to port 8990 and placed in your Blob storage container
+* A Sentieon license file for your FQDN, bound to port 8990
 
 ### Provision the license server
 
@@ -44,6 +44,16 @@ terraform apply \
 The infrastructure should startup within a few minutes.
 
 Azure will charge your account for deployed infrastructure including the VM instance, disk, public ip and virtual network.
+
+### Install Sentieon and license file
+
+User the ssh key downloaded from infrastrucutre spin up to copy your license file to the instance as well as download the Sentieon® tools. 
+
+Start the license server with the following command:
+
+```
+sentieon licsrvr --start [-l <licsrvr_log>] <license_file>
+```
 
 ### Cleanup
 
