@@ -6,6 +6,13 @@ resource "azurerm_network_security_group" "security_group" {
   location            = var.rg_location
   resource_group_name = var.rg_name
 
+  module "security_group" {
+    source = "./security_group"
+    
+    rg_name    = azurerm_resource_group.rg.name
+    rg_location = azurerm_resource_group.rg.location
+  }
+
   security_rule {
     name                       = "AllowLicenseServerInboundTCP"
     priority                   = 100
@@ -14,7 +21,7 @@ resource "azurerm_network_security_group" "security_group" {
     protocol                   = "Tcp"
     source_address_prefix      = "*"
     source_port_range          = "*"
-    destination_address_prefix = azurerm_linux_virtual_machine.license_server_instance.private_ip_address
+    destination_address_prefix = var.private_ip_address
     destination_port_range     = "8990"
   }
 
@@ -25,7 +32,7 @@ resource "azurerm_network_security_group" "security_group" {
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
-    destination_address_prefix = "52.89.132.242/32""
+    destination_address_prefix = "52.89.132.242/32"
     destination_port_range     = "443"
     source_address_prefix      = "*"
     source_port_range          = "*"

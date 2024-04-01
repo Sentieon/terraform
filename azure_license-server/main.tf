@@ -24,12 +24,6 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["172.31.0.0/24"]
 }
 
-module "security_group" {
-  source = "./security_group"
-  
-  rg_name    = azurerm_resource_group.rg.name
-  rg_location = azurerm_resource_group.rg.location
-}
 
 resource "azurerm_public_ip" "license_server_public_ip" {
   name                = "license-server-public-ip"
@@ -81,6 +75,14 @@ resource "azurerm_linux_virtual_machine" "license_server_instance" {
     public_key = tls_private_key.ssh.public_key_openssh
   }
 
+}
+
+module "security_group" {
+  source = "./security_group"
+  
+  rg_name    = azurerm_resource_group.rg.name
+  rg_location = azurerm_resource_group.rg.location 
+  private_ip_address = azurerm_linux_virtual_machine.license_server_instance.private_ip_address
 }
 
 output "license_server_private_ip" {
