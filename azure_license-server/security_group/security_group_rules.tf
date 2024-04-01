@@ -1,17 +1,12 @@
 variable "rg_name" {}
 variable "rg_location" {}
+variable "private_ip_address" {}
 
 resource "azurerm_network_security_group" "security_group" {
   name                = "license-server-security-group"
   location            = var.rg_location
   resource_group_name = var.rg_name
 
-  module "security_group" {
-    source = "./security_group"
-    
-    rg_name    = azurerm_resource_group.rg.name
-    rg_location = azurerm_resource_group.rg.location
-  }
 
   security_rule {
     name                       = "AllowLicenseServerInboundTCP"

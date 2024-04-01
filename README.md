@@ -61,7 +61,8 @@ The provisioned infrastructure can be destroyed with the `terraform apply -destr
 ```bash
 terraform apply -destroy \
   -var 'azure_region=<AZURE_REGION>' \
-  -var 'resource_name=<RESROUCE_NAME>' 
+  -var 'resource_name=<RESOURCE_NAME>' \
+  -var 'public_key_location=<PUBLIC_KEY_LOCATION>'  
 ```
 
 ## Quick Start - Sentieon License server deployment to AWS

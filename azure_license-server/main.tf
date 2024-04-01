@@ -1,5 +1,6 @@
 variable "azure_region" {}
 variable "resource_name" {}
+variable "public_key_location" {}
 
 provider "azurerm" {
   features {}
@@ -8,6 +9,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_name
   location = var.azure_region
+  ssh_key = var.public_key_location
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -23,7 +25,6 @@ resource "azurerm_subnet" "subnet" {
   resource_group_name  = azurerm_resource_group.rg.name
   address_prefixes     = ["172.31.0.0/24"]
 }
-
 
 resource "azurerm_public_ip" "license_server_public_ip" {
   name                = "license-server-public-ip"
@@ -74,7 +75,6 @@ resource "azurerm_linux_virtual_machine" "license_server_instance" {
     username   = "adminUser"
     public_key = tls_private_key.ssh.public_key_openssh
   }
-
 }
 
 module "security_group" {
@@ -87,4 +87,9 @@ module "security_group" {
 
 output "license_server_private_ip" {
   value = azurerm_linux_virtual_machine.license_server_instance.private_ip_address
+}
+
+resource "local_file" "admin_ssh_key_pem" {
+  filename = azurerm_resource_group.rg.location  # Specify the path where you want to save the PEM key
+  content = tls_private_key.ssh.private_key_pem
 }
