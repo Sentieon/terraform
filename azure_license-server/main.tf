@@ -1,6 +1,6 @@
 variable "azure_region" {}
 variable "resource_name" {}
-variable "public_key_location" {}
+variable "private_key_location" {}
 
 provider "azurerm" {
   features {}
@@ -9,7 +9,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_name
   location = var.azure_region
-  ssh_key = var.public_key_location
+  key      = var.private_key_location
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -90,6 +90,6 @@ output "license_server_private_ip" {
 }
 
 resource "local_file" "admin_ssh_key_pem" {
-  filename = azurerm_resource_group.rg.location  # Specify the path where you want to save the PEM key
+  filename = azurerm_resource_group.rg.key  # Specify the path where you want to save the PEM key
   content = tls_private_key.ssh.private_key_pem
 }
