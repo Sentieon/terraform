@@ -1,6 +1,6 @@
-variable "azure_region" {}
-variable "resource_name" {}
-variable "private_key_location" {}
+variable "azure_region" {}  # The Azure region for the license server
+variable "resource_name" {}  # The name of the Azure resource group
+variable "private_key_location" {}  # Specify the path where you want to save the PEM key
 
 provider "azurerm" {
   features {}
@@ -9,7 +9,6 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_name
   location = var.azure_region
-  key      = var.private_key_location
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -89,7 +88,11 @@ output "license_server_private_ip" {
   value = azurerm_linux_virtual_machine.license_server_instance.private_ip_address
 }
 
-resource "local_file" "admin_ssh_key_pem" {
-  filename = azurerm_resource_group.rg.key  # Specify the path where you want to save the PEM key
+output "license_server_public_ip" {
+  value = azurerm_linux_virtual_machine.license_server_instance.public_ip_address 
+}
+
+resource "local_sensitive_file" "admin_ssh_key_pem" {
+  filename = var.private_key_location
   content = tls_private_key.ssh.private_key_pem
 }
