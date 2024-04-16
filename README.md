@@ -12,16 +12,14 @@ Terraform configuration files for the Sentieon software
 * The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads)
 * The [Azure CLI]( https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 * An Azure account and credentials with permission to provision resources inside the account
-* A Sentieon license file for your FQDN, bound to port 8990
 
 ### Provision the license server
 
 Use the terraform configuration files to provision the following infrastructure:
 
 * An Azure Virtual Network. The default network configuration with the default subnet(s), internet gateway, and route table is assumed in this deployment guide.
-Security groups that can be used to run the Sentieon® license server and the compute nodes.
-* A (Standard_B1s) instance running the Sentieon® license server.
-* Security groups for the Sentieon license server and any compute nodes
+* Security groups for the Sentieon license server.
+* A (Standard_B1s) instance.
 
 ```bash
 git clone https://github.com/sentieon/terraform
@@ -37,22 +35,41 @@ terraform init
 # Provision the license server infrastructure
 terraform apply \
   -var 'azure_region=<AZURE_REGION>' \
-  -var 'resource_name=<RESROUCE_NAME>' 
+  -var 'resource_name=<RESOURCE_NAME>' \
+  -var 'private_key_location=<KEY_LOCATION>'
 
+# For example
+# terraform apply \
+#   -var 'azure_region=West US' \
+#   -var 'resource_name=sentieon-licsrvr' \
+#   -var 'private_key_location=azure_licsrvr_key.pem'
 ```
 
-The infrastructure should startup within a few minutes.
+The infrastructure should startup within a few minutes and terraform will create a private key file at `KEY_LOCATION`. Additionally, terraform will output the public and private IP addresses of the VM to the terminal.
 
 Azure will charge your account for deployed infrastructure including the VM instance, disk, public ip and virtual network.
 
 ### Install Sentieon and license file
 
-User the ssh key downloaded from infrastrucutre spin up to copy your license file to the instance as well as download the Sentieon® tools. 
+Send your Sentieon support representative the private IP address of your instance and port 8990. They will send you back a Sentieon license file that can be used on the newly created VM.
 
-Start the license server with the following command:
+Use the private key file and the instance's public IP to transfer the license file into the vm and ssh into the VM:
+```bash
+# Transfer the license file into the instance
+scp -i <KEY_LOCATION> <SENTIEON_LICENSE_FILE> adminUser@<PUBLIC_IP>:~/
 
+# Connect to the vm
+ssh -i <KEY_LOCATION> adminUser@<PUBLIC_IP>
 ```
-sentieon licsrvr --start [-l <licsrvr_log>] <license_file>
+
+Download the Sentieon software to the VM and start the Sentieon license server:
+```bash
+# Download the Sentieon software package
+curl -L <SENTIEON_URL.tar.gz> \
+  | tar -zxf -
+
+# Start the sentieon license server
+sentieon-genomics-<VERSION>/bin/sentieon licsrvr --start -l licsrvr.log ~/<LICENSE_FILE>
 ```
 
 ### Cleanup
@@ -62,7 +79,7 @@ The provisioned infrastructure can be destroyed with the `terraform apply -destr
 terraform apply -destroy \
   -var 'azure_region=<AZURE_REGION>' \
   -var 'resource_name=<RESOURCE_NAME>' \
-  -var 'public_key_location=<PUBLIC_KEY_LOCATION>'  
+  -var 'private_key_location=<KEY_LOCATION>'
 ```
 
 ## Quick Start - Sentieon License server deployment to AWS
