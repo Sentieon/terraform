@@ -7,7 +7,7 @@ variable "kms_key" {
 }
 variable "sentieon_version" {
   type    = string
-  default = "202503.01"
+  default = "202503.02"
 }
 
 locals {
