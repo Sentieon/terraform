@@ -21,7 +21,7 @@ resource "aws_vpc_security_group_ingress_rule" "inbound_icmp_4_master" {
 resource "aws_vpc_security_group_ingress_rule" "inbound_icmp_3" {
   security_group_id = aws_security_group.sentieon_license_server.id
 
-  cidr_ipv4   = data.aws_vpc.default.cidr_block
+  cidr_ipv4   = local.vpc_cidr
   ip_protocol = "icmp"
   from_port   = 3
   to_port     = -1
@@ -30,7 +30,7 @@ resource "aws_vpc_security_group_ingress_rule" "inbound_icmp_3" {
 resource "aws_vpc_security_group_ingress_rule" "inbound_icmp_4" {
   security_group_id = aws_security_group.sentieon_license_server.id
 
-  cidr_ipv4   = data.aws_vpc.default.cidr_block
+  cidr_ipv4   = local.vpc_cidr
   ip_protocol = "icmp"
   from_port   = 4
   to_port     = -1
@@ -58,7 +58,7 @@ resource "aws_vpc_security_group_egress_rule" "outbound_icmp_4_master" {
 resource "aws_vpc_security_group_egress_rule" "outbound_icmp_3" {
   security_group_id = aws_security_group.sentieon_license_server.id
 
-  cidr_ipv4   = data.aws_vpc.default.cidr_block
+  cidr_ipv4   = local.vpc_cidr
   ip_protocol = "icmp"
   from_port   = 3
   to_port     = -1
@@ -67,7 +67,7 @@ resource "aws_vpc_security_group_egress_rule" "outbound_icmp_3" {
 resource "aws_vpc_security_group_egress_rule" "outbound_icmp_4" {
   security_group_id = aws_security_group.sentieon_license_server.id
 
-  cidr_ipv4   = data.aws_vpc.default.cidr_block
+  cidr_ipv4   = local.vpc_cidr
   ip_protocol = "icmp"
   from_port   = 4
   to_port     = -1
@@ -79,7 +79,7 @@ resource "aws_vpc_security_group_ingress_rule" "inbound_tcp" {
 
   from_port   = 8990
   to_port     = 8990
-  cidr_ipv4   = data.aws_vpc.default.cidr_block
+  cidr_ipv4   = local.vpc_cidr
   ip_protocol = "tcp"
 }
 
@@ -187,7 +187,7 @@ resource "aws_vpc_security_group_egress_rule" "outbound_tcp_compute" {
 
   from_port   = 8990
   to_port     = 8990
-  cidr_ipv4   = data.aws_vpc.default.cidr_block
+  cidr_ipv4   = local.vpc_cidr
   ip_protocol = "tcp"
 }
 

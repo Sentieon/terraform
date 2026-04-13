@@ -3,13 +3,15 @@ Terraform configuration files for the Sentieon software
 
 ## Introduction
 
-[Terraform](https://www.terraform.io/) is an open-source infrastructure as code (IaC) tool for the provisioning and management of cloud infrastructure. This repository contains example terraform configuration files that can be used to quickly deploy the Sentieon software to your cloud infrastructure.
+[Terraform](https://www.terraform.io/) is an open-source infrastructure as code (IaC) tool for the provisioning and management of cloud infrastructure. [OpenTofu](https://opentofu.org/) is an open-source fork of Terraform that is compatible with these configuration files. This repository contains example terraform configuration files that can be used to quickly deploy the Sentieon software to your cloud infrastructure.
+
+Throughout this guide, you can substitute `tofu` for `terraform` in all commands if using OpenTofu.
 
 ## Quick Start - Sentieon License server deployment to Azure
 
 ### Requirements
 
-* The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads)
+* The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads) or [OpenTofu CLI](https://opentofu.org/docs/intro/install/)
 * The [Azure CLI]( https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 * An Azure account and credentials with permission to provision resources inside the account
 
@@ -86,7 +88,7 @@ terraform apply -destroy \
 
 ### Requirements
 
-* The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads)
+* The [Terraform CLI](https://developer.hashicorp.com/terraform/downloads) or [OpenTofu CLI](https://opentofu.org/docs/intro/install/)
 * The [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 * An AWS account and credentials with permission to provision resources inside the account
 * A Sentieon license file for your FQDN, bound to port 8990 and placed in your s3 bucket
@@ -126,6 +128,16 @@ terraform apply \
   -var 'aws_region=<AWS_REGION>' \
   -var 'licsrvr_fqdn=<FQDN>' \
   -var 'license_s3_uri=s3://<S3_URI>'
+```
+
+By default, the deployment uses the region's default VPC. To deploy into a specific VPC, pass the `vpc_id` and `subnet_id` variables:
+```bash
+terraform apply \
+  -var 'aws_region=<AWS_REGION>' \
+  -var 'licsrvr_fqdn=<FQDN>' \
+  -var 'license_s3_uri=s3://<S3_URI>' \
+  -var 'vpc_id=<VPC_ID>' \
+  -var 'subnet_id=<SUBNET_ID>'
 ```
 
 The infrastructure should startup within a few minutes.
