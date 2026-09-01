@@ -44,7 +44,7 @@ variable "subnet_id" {
 variable "sentieon_version" {
   type        = string
   description = "Sentieon software version to install"
-  default     = "202503.03"
+  default     = "202503.04"
 }
 
 locals {
